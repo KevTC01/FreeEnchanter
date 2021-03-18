@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -94,6 +95,9 @@ public class EnchantmentMenu implements Listener {
     @EventHandler
     public void onInventoryClick(final InventoryClickEvent ev)
     {
+        Player p = (Player) ev.getWhoClicked();
+        int expLevel = p.getExpToLevel();
+
         if (ev.getInventory() != inventory)
         {
             return;
@@ -101,12 +105,17 @@ public class EnchantmentMenu implements Listener {
 
         if (ev.getSlot() == 31)
         {
-            closeInventory(ev.getWhoClicked());
+            closeInventory(p);
             try {
-                itemToBeEnchanted.addEnchantment(enchantment, level);
-                ev.getWhoClicked().sendMessage("[FreeEnchantment]: Item Enchantment Added: " + enchantment.getKey().getKey() + " " + level);
+                if (expLevel >= 3) {
+                    itemToBeEnchanted.addEnchantment(enchantment, level);
+                    p.sendMessage("[FreeEnchantment]: Item Enchantment Added: " + enchantment.getKey().getKey() + " " + level);
+                    p.setLevel(expLevel - 3);
+                } else {
+                    p.sendMessage("[FreeEnchantment]: You do not have 3 levels to enchant this item");
+                }
             } catch (IllegalArgumentException e) {
-                ev.getWhoClicked().sendMessage("[FreeEnchantment]: Enchantment can't be applied to this item");
+                p.sendMessage("[FreeEnchantment]: Enchantment can't be applied to this item");
             }
             HandlerList.unregisterAll(this);
         }
