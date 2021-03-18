@@ -82,28 +82,10 @@ public class EnchantmentMenu implements Listener {
 
     }
 
-    private Boolean isArmorOrWeapon(ItemStack item)
-    {
-        if (null != item)
-        {
-            String name = item.getType().name();
-            if (name.endsWith("_HELMET")
-                    || name.endsWith("_CHESTPLATE")
-                    || name.endsWith("_LEGGINGS")
-                    || name.endsWith("_BOOTS")
-                    || name.endsWith("SWORD")
-                    || name.endsWith("AXE")) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     @EventHandler
     public void inventoryClose(final InventoryCloseEvent ev)
     {
-        if (ev.getInventory() != inventory)
+        if (!ev.getInventory().equals(inventory))
         {
             return;
         }
@@ -116,17 +98,20 @@ public class EnchantmentMenu implements Listener {
         Player p = (Player) ev.getWhoClicked();
         int expLevel = p.getLevel();
 
-        if (ev.getInventory() != inventory)
+        if (!ev.getInventory().equals(inventory))
         {
             return;
         }
+
+        ev.setCancelled(true);
 
         if (ev.getSlot() == 31)
         {
             closeInventory(p);
             try {
                 if (expLevel >= 3) {
-                    itemToBeEnchanted.addEnchantment(enchantment, level);
+                    //itemToBeEnchanted.addEnchantment(enchantment, level);
+                    itemToBeEnchanted.addEnchantment(Enchantment.DIG_SPEED, 3);
                     p.sendMessage("[FreeEnchantment]: Item Enchantment Added: " + enchantment.getName() + " " + level);
                     p.setLevel(expLevel - 3);
                 } else {
@@ -138,14 +123,12 @@ public class EnchantmentMenu implements Listener {
             HandlerList.unregisterAll(this);
         }
 
-        ev.setCancelled(true);
-
     }
 
     @EventHandler
     public void onInventoryClick(final InventoryDragEvent ev)
     {
-        if (ev.getInventory() != inventory)
+        if (!ev.getInventory().equals(inventory))
         {
             return;
         }

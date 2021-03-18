@@ -12,6 +12,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class CustomEnchanterListener implements Listener
@@ -36,6 +37,21 @@ public class CustomEnchanterListener implements Listener
                         && p.hasPermission("enchanter.use"))
         {
             beginEnchantment(item, p);
+        }
+    }
+
+    @EventHandler
+    public void onWear(PlayerInteractEvent ev)
+    {
+        if (ev.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+        {
+            if (isArmorOrWeapon(ev.getPlayer().getItemInHand()))
+            {
+                if (ev.getPlayer().getTargetBlock((Set<Material>) null, 10).getType().equals(Material.ENDER_PORTAL_FRAME))
+                {
+                    ev.setCancelled(true);
+                }
+            }
         }
     }
 
