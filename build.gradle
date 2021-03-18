@@ -1,0 +1,20 @@
+plugins {
+    id 'java'
+}
+
+group 'net.Demonly.freeenchanter'
+version '0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url "https://jitpack.io" }
+    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+}
+
+dependencies {
+    compileOnly 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+    compileOnly 'org.projectlombok:lombok:1.18.16'
+    implementation 'com.github.dig:bukkit-gui:1.0'
+}
