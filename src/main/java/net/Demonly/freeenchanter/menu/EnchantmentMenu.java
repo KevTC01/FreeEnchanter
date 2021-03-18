@@ -96,7 +96,7 @@ public class EnchantmentMenu implements Listener {
     public void onInventoryClick(final InventoryClickEvent ev)
     {
         Player p = (Player) ev.getWhoClicked();
-        int expLevel = p.getExpToLevel();
+        int expLevel = p.getLevel();
 
         if (ev.getInventory() != inventory)
         {
