@@ -110,8 +110,7 @@ public class EnchantmentMenu implements Listener {
             closeInventory(p);
             try {
                 if (expLevel >= 3) {
-                    //itemToBeEnchanted.addEnchantment(enchantment, level);
-                    itemToBeEnchanted.addEnchantment(Enchantment.DIG_SPEED, 3);
+                    itemToBeEnchanted.addEnchantment(enchantment, level);
                     p.sendMessage("[FreeEnchantment]: Item Enchantment Added: " + enchantment.getName() + " " + level);
                     p.setLevel(expLevel - 3);
                 } else {
