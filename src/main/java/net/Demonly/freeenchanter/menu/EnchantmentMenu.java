@@ -70,7 +70,7 @@ public class EnchantmentMenu implements Listener {
     private void setEnchantmentItem()
     {
         ArrayList<String> lore = new ArrayList<String>() {{
-            add(ChatColor.GRAY + enchantment.getKey().getKey() + " " + level);
+            add(ChatColor.GRAY + enchantment.getName() + " " + level);
         }};
 
         ItemStack enchantmentItem = new ItemStack(Material.NAME_TAG);
@@ -80,6 +80,24 @@ public class EnchantmentMenu implements Listener {
         enchantmentItem.setItemMeta(meta);
         this.enchantmentItem = enchantmentItem;
 
+    }
+
+    private Boolean isArmorOrWeapon(ItemStack item)
+    {
+        if (null != item)
+        {
+            String name = item.getType().name();
+            if (name.endsWith("_HELMET")
+                    || name.endsWith("_CHESTPLATE")
+                    || name.endsWith("_LEGGINGS")
+                    || name.endsWith("_BOOTS")
+                    || name.endsWith("SWORD")
+                    || name.endsWith("AXE")) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @EventHandler
@@ -109,7 +127,7 @@ public class EnchantmentMenu implements Listener {
             try {
                 if (expLevel >= 3) {
                     itemToBeEnchanted.addEnchantment(enchantment, level);
-                    p.sendMessage("[FreeEnchantment]: Item Enchantment Added: " + enchantment.getKey().getKey() + " " + level);
+                    p.sendMessage("[FreeEnchantment]: Item Enchantment Added: " + enchantment.getName() + " " + level);
                     p.setLevel(expLevel - 3);
                 } else {
                     p.sendMessage("[FreeEnchantment]: You do not have 3 levels to enchant this item");

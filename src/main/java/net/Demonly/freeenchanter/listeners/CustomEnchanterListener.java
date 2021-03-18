@@ -27,12 +27,12 @@ public class CustomEnchanterListener implements Listener
     public void onBlockClick(PlayerInteractEvent ev)
     {
         Player p = ev.getPlayer();
-        ItemStack item = ev.getPlayer().getInventory().getItemInMainHand();
+        ItemStack item = ev.getPlayer().getInventory().getItemInHand();
         Block block = ev.getClickedBlock();
 
         if (ev.getAction().equals(Action.RIGHT_CLICK_BLOCK)
                 && isArmorOrWeapon(item)
-                    && block.getType().equals(Material.END_PORTAL_FRAME)
+                    && block.getType().equals(Material.ENDER_PORTAL_FRAME)
                         && p.hasPermission("enchanter.use"))
         {
             beginEnchantment(item, p);
