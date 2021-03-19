@@ -7,6 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -28,7 +29,7 @@ public class CustomEnchanterListener implements Listener
     public void onBlockClick(PlayerInteractEvent ev)
     {
         Player p = ev.getPlayer();
-        ItemStack item = ev.getPlayer().getInventory().getItemInHand();
+        final ItemStack item = ev.getPlayer().getInventory().getItemInHand();
         Block block = ev.getClickedBlock();
 
         if (ev.getAction().equals(Action.RIGHT_CLICK_BLOCK)
@@ -36,11 +37,11 @@ public class CustomEnchanterListener implements Listener
                     && block.getType().equals(Material.ENDER_PORTAL_FRAME)
                         && p.hasPermission("enchanter.use"))
         {
-            beginEnchantment(item, p);
+            beginEnchantment(p);
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onWear(PlayerInteractEvent ev)
     {
         if (ev.getAction().equals(Action.RIGHT_CLICK_BLOCK))
@@ -73,7 +74,10 @@ public class CustomEnchanterListener implements Listener
         return false;
     }
 
-    private void beginEnchantment(ItemStack item, Player p)
+    /*
+    Based on item in main hand
+     */
+    private void beginEnchantment(Player p)
     {
         Enchantment randomEnchantment = Enchantment.values()[(int) (Math.random()*Enchantment.values().length)];
 
@@ -84,7 +88,7 @@ public class CustomEnchanterListener implements Listener
             level = 1;
         }
 
-        EnchantmentMenu menu = new EnchantmentMenu(randomEnchantment, item, level);
+        EnchantmentMenu menu = new EnchantmentMenu(randomEnchantment, level, p);
         plugin.getServer().getPluginManager().registerEvents(menu, plugin);
         menu.openInventory(p);
 

@@ -21,34 +21,36 @@ import java.util.List;
 
 public class EnchantmentMenu implements Listener {
 
-    private final Inventory inventory;
+    private Inventory inventory;
     private ItemStack itemToBeEnchanted;
     private ItemStack enchantmentItem;
     private Enchantment enchantment;
     private int level;
 
-    public EnchantmentMenu(Enchantment enchantment, ItemStack itemToBeEnchanted, int level)
+    public EnchantmentMenu(Enchantment enchantment, int level, Player p)
     {
-        this.itemToBeEnchanted = itemToBeEnchanted;
         this.enchantment = enchantment;
         this.level = level;
 
         setEnchantmentItem();
         inventory = Bukkit.createInventory(null, 54, "Free Enchantment");
+
+        this.itemToBeEnchanted = p.getItemInHand();
+
         initItems();
 
     }
 
     public void initItems()
     {
-        inventory.setItem(13, itemToBeEnchanted);
+        inventory.setItem(13, this.itemToBeEnchanted);
         inventory.setItem(31, createItem(enchantmentItem.getType(), enchantmentItem.getItemMeta().getDisplayName(), enchantmentItem.getItemMeta().getLore()));
     }
 
-    protected ItemStack createItem(final Material material, final String name, final List<String> lore)
+    protected ItemStack createItem(Material material, String name, List<String> lore)
     {
-        final ItemStack item = new ItemStack(material, 1);
-        final ItemMeta meta = item.getItemMeta();
+        ItemStack item = new ItemStack(material, 1);
+        ItemMeta meta = item.getItemMeta();
 
         meta.setDisplayName(name);
         meta.setLore(lore);
@@ -57,12 +59,12 @@ public class EnchantmentMenu implements Listener {
         return item;
     }
 
-    public void openInventory(final HumanEntity player)
+    public void openInventory(HumanEntity player)
     {
         player.openInventory(inventory);
     }
 
-    public void closeInventory(final HumanEntity player)
+    public void closeInventory(HumanEntity player)
     {
         player.closeInventory();
     }
@@ -83,7 +85,7 @@ public class EnchantmentMenu implements Listener {
     }
 
     @EventHandler
-    public void inventoryClose(final InventoryCloseEvent ev)
+    public void inventoryClose(InventoryCloseEvent ev)
     {
         if (!ev.getInventory().equals(inventory))
         {
@@ -93,7 +95,7 @@ public class EnchantmentMenu implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(final InventoryClickEvent ev)
+    public void onInventoryClick(InventoryClickEvent ev)
     {
         Player p = (Player) ev.getWhoClicked();
         int expLevel = p.getLevel();
@@ -110,7 +112,8 @@ public class EnchantmentMenu implements Listener {
             closeInventory(p);
             try {
                 if (expLevel >= 3) {
-                    itemToBeEnchanted.addEnchantment(enchantment, level);
+                    p.getItemInHand().addEnchantment(enchantment, level);
+
                     p.sendMessage("[FreeEnchantment]: Item Enchantment Added: " + enchantment.getName() + " " + level);
                     p.setLevel(expLevel - 3);
                 } else {
