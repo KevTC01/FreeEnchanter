@@ -114,13 +114,13 @@ public class EnchantmentMenu implements Listener {
                 if (expLevel >= 3) {
                     p.getItemInHand().addEnchantment(enchantment, level);
 
-                    p.sendMessage("[FreeEnchantment]: Item Enchantment Added: " + enchantment.getName() + " " + level);
+                    p.sendMessage("Item successfully enchanted!");
                     p.setLevel(expLevel - 3);
                 } else {
-                    p.sendMessage("[FreeEnchantment]: You do not have 3 levels to enchant this item");
+                    p.sendMessage("You do not have 3 levels to enchant this item");
                 }
             } catch (IllegalArgumentException e) {
-                p.sendMessage("[FreeEnchantment]: Enchantment can't be applied to this item");
+                p.sendMessage("Enchantment can't be applied to this item");
             }
             HandlerList.unregisterAll(this);
         }
