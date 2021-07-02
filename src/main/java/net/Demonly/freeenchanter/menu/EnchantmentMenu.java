@@ -145,7 +145,10 @@ public class EnchantmentMenu implements Listener {
                         case "V" -> lvl = 5;
                     }
 
-                    p.getItemInHand().addEnchantment(ench, lvl);
+                    ItemStack currentItem = p.getItemInHand();
+                    if (!(currentItem.getEnchantments().containsKey(ench) && currentItem.getEnchantmentLevel(ench) == lvl)){
+                        currentItem.addEnchantment(ench, lvl);
+                    }
 
                     p.sendMessage("Item successfully enchanted!");
                     p.setLevel(expLevel - 3);
