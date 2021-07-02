@@ -1,7 +1,6 @@
 package net.Demonly.freeenchanter.menu;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
@@ -17,23 +16,16 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class EnchantmentMenu implements Listener {
 
-    private Inventory inventory;
-    private ItemStack itemToBeEnchanted;
-    private ItemStack enchantmentItem;
-    private Enchantment enchantment;
-    private int level;
+    private final Inventory inventory;
+    private final ItemStack itemToBeEnchanted;
 
-    public EnchantmentMenu(Enchantment enchantment, int level, Player p)
+    public EnchantmentMenu(Player p)
     {
-        this.enchantment = enchantment;
-        this.level = level;
 
-        setEnchantmentItem();
-        inventory = Bukkit.createInventory(null, 54, "Free Enchantment");
+        inventory = Bukkit.createInventory(null, 54, "Enchanter");
 
         this.itemToBeEnchanted = p.getItemInHand();
 
@@ -43,16 +35,48 @@ public class EnchantmentMenu implements Listener {
 
     public void initItems()
     {
-        inventory.setItem(13, this.itemToBeEnchanted);
-        inventory.setItem(31, createItem(enchantmentItem.getType(), enchantmentItem.getItemMeta().getDisplayName(), enchantmentItem.getItemMeta().getLore()));
+        inventory.setItem(13, new ItemStack(Material.ENDER_PORTAL_FRAME));
+        ArrayList<ItemStack> enchants = getEnchants(itemToBeEnchanted);
+        int index = 37;
+        for (ItemStack book : enchants){
+            inventory.setItem(index, book);
+            index +=2;
+        }
     }
 
-    protected ItemStack createItem(Material material, String name, List<String> lore)
+    public ArrayList<ItemStack> getEnchants(ItemStack item){
+        ArrayList<ItemStack> enchants = new ArrayList<>();
+        String name = item.getType().name();
+        enchants.add(createItem("Unbreaking III"));
+        if (name.endsWith("SWORD")){
+            enchants.add(createItem("Sharpness V"));
+            enchants.add(createItem("Knockback II"));
+            enchants.add(createItem("Fire_Aspect II"));
+        } else if (name.endsWith("HELMET")){
+            enchants.add(createItem("Protection IV"));
+            enchants.add(createItem("Respiration III"));
+            enchants.add(createItem("Aqua_Affinity I"));
+        } else if (name.endsWith("CHESTPLATE")){
+            enchants.add(createItem("Protection IV"));
+            enchants.add(createItem("Thorns III"));
+        } else if (name.endsWith("LEGGINGS")){
+            enchants.add(createItem("Protection IV"));
+        } else if (name.endsWith("BOOTS")){
+            enchants.add(createItem("Protection IV"));
+            enchants.add(createItem("Feather_Falling IV"));
+            enchants.add(createItem("Depth_Strider III"));
+        }
+        return enchants;
+    }
+
+    protected ItemStack createItem(String name)
     {
-        ItemStack item = new ItemStack(material, 1);
+        ItemStack item = new ItemStack(Material.ENCHANTED_BOOK, 1);
         ItemMeta meta = item.getItemMeta();
 
         meta.setDisplayName(name);
+        ArrayList<String> lore = new ArrayList<>();
+        lore.add(name);
         meta.setLore(lore);
         item.setItemMeta(meta);
 
@@ -67,21 +91,6 @@ public class EnchantmentMenu implements Listener {
     public void closeInventory(HumanEntity player)
     {
         player.closeInventory();
-    }
-
-    private void setEnchantmentItem()
-    {
-        ArrayList<String> lore = new ArrayList<String>() {{
-            add(ChatColor.GRAY + enchantment.getName() + " " + level);
-        }};
-
-        ItemStack enchantmentItem = new ItemStack(Material.NAME_TAG);
-        ItemMeta meta = enchantmentItem.getItemMeta();
-        meta.setDisplayName(ChatColor.WHITE + "Click to add enchantment:");
-        meta.setLore(lore);
-        enchantmentItem.setItemMeta(meta);
-        this.enchantmentItem = enchantmentItem;
-
     }
 
     @EventHandler
@@ -107,12 +116,36 @@ public class EnchantmentMenu implements Listener {
 
         ev.setCancelled(true);
 
-        if (ev.getSlot() == 31)
-        {
+        ItemStack EnchantBook = ev.getCurrentItem();
+        if (EnchantBook.getType().equals(Material.ENCHANTED_BOOK)) {
             closeInventory(p);
             try {
                 if (expLevel >= 3) {
-                    p.getItemInHand().addEnchantment(enchantment, level);
+                    String[] enchLvl = EnchantBook.getItemMeta().getDisplayName().split(" ");
+                    Enchantment ench = null;
+                    int lvl = -1;
+                    switch (enchLvl[0]) {
+                        case "Sharpness" -> ench = Enchantment.DAMAGE_ALL;
+                        case "Unbreaking" -> ench = Enchantment.DURABILITY;
+                        case "Fire_Aspect" -> ench = Enchantment.FIRE_ASPECT;
+                        case "Knockback" -> ench = Enchantment.KNOCKBACK;
+                        case "Thorns" -> ench = Enchantment.THORNS;
+                        case "Respiration" -> ench = Enchantment.OXYGEN;
+                        case "Aqua Affinity" -> ench = Enchantment.WATER_WORKER;
+                        case "Protection" -> ench = Enchantment.PROTECTION_ENVIRONMENTAL;
+                        case "Feather_Falling" -> ench = Enchantment.PROTECTION_FALL;
+                        case "Depth_Strider" -> ench = Enchantment.DEPTH_STRIDER;
+                    }
+
+                    switch (enchLvl[1]){
+                        case "I" -> lvl = 1;
+                        case "II" -> lvl = 2;
+                        case "III" -> lvl = 3;
+                        case "IV" -> lvl = 4;
+                        case "V" -> lvl = 5;
+                    }
+
+                    p.getItemInHand().addEnchantment(ench, lvl);
 
                     p.sendMessage("Item successfully enchanted!");
                     p.setLevel(expLevel - 3);
