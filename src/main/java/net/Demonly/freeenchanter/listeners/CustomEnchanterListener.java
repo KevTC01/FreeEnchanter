@@ -4,7 +4,6 @@ import net.Demonly.freeenchanter.FreeEnchanter;
 import net.Demonly.freeenchanter.menu.EnchantmentMenu;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -14,11 +13,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Set;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class CustomEnchanterListener implements Listener
 {
-    private FreeEnchanter plugin;
+    private final FreeEnchanter plugin;
 
     public CustomEnchanterListener(FreeEnchanter plugin)
     {
@@ -37,7 +35,9 @@ public class CustomEnchanterListener implements Listener
                     && block.getType().equals(Material.ENDER_PORTAL_FRAME)
                         && p.hasPermission("enchanter.use"))
         {
-            beginEnchantment(p);
+            EnchantmentMenu menu = new EnchantmentMenu(p);
+            plugin.getServer().getPluginManager().registerEvents(menu, plugin);
+            menu.openInventory(p);
         }
     }
 
@@ -61,36 +61,14 @@ public class CustomEnchanterListener implements Listener
         if (null != item)
         {
             String name = item.getType().name();
-            if (name.endsWith("_HELMET")
-            || name.endsWith("_CHESTPLATE")
-            || name.endsWith("_LEGGINGS")
-            || name.endsWith("_BOOTS")
-            || name.endsWith("SWORD")
-            || name.endsWith("AXE")) {
-                return true;
-            }
+            return name.endsWith("_HELMET")
+                    || name.endsWith("_CHESTPLATE")
+                    || name.endsWith("_LEGGINGS")
+                    || name.endsWith("_BOOTS")
+                    || name.endsWith("SWORD")
+                    || name.endsWith("AXE");
         }
 
         return false;
-    }
-
-    /*
-    Based on item in main hand
-     */
-    private void beginEnchantment(Player p)
-    {
-        Enchantment randomEnchantment = Enchantment.values()[(int) (Math.random()*Enchantment.values().length)];
-
-        int level;
-        if (randomEnchantment.getMaxLevel() != 1) {
-            level = ThreadLocalRandom.current().nextInt(1, randomEnchantment.getMaxLevel());
-        } else {
-            level = 1;
-        }
-
-        EnchantmentMenu menu = new EnchantmentMenu(randomEnchantment, level, p);
-        plugin.getServer().getPluginManager().registerEvents(menu, plugin);
-        menu.openInventory(p);
-
     }
 }
