@@ -125,24 +125,54 @@ public class EnchantmentMenu implements Listener {
                     Enchantment ench = null;
                     int lvl = -1;
                     switch (enchLvl[0]) {
-                        case "Sharpness" -> ench = Enchantment.DAMAGE_ALL;
-                        case "Unbreaking" -> ench = Enchantment.DURABILITY;
-                        case "Fire_Aspect" -> ench = Enchantment.FIRE_ASPECT;
-                        case "Knockback" -> ench = Enchantment.KNOCKBACK;
-                        case "Thorns" -> ench = Enchantment.THORNS;
-                        case "Respiration" -> ench = Enchantment.OXYGEN;
-                        case "Aqua Affinity" -> ench = Enchantment.WATER_WORKER;
-                        case "Protection" -> ench = Enchantment.PROTECTION_ENVIRONMENTAL;
-                        case "Feather_Falling" -> ench = Enchantment.PROTECTION_FALL;
-                        case "Depth_Strider" -> ench = Enchantment.DEPTH_STRIDER;
+                        case "Sharpness":
+                                ench = Enchantment.DAMAGE_ALL;
+                                break;
+                        case "Unbreaking":
+                            ench = Enchantment.DURABILITY;
+                            break;
+                        case "Fire_Aspect":
+                            ench = Enchantment.FIRE_ASPECT;
+                            break;
+                        case "Knockback":
+                            ench = Enchantment.KNOCKBACK;
+                            break;
+                        case "Thorns":
+                            ench = Enchantment.THORNS;
+                            break;
+                        case "Respiration":
+                            ench = Enchantment.OXYGEN;
+                            break;
+                        case "Aqua Affinity":
+                            ench = Enchantment.WATER_WORKER;
+                            break;
+                        case "Protection":
+                            ench = Enchantment.PROTECTION_ENVIRONMENTAL;
+                            break;
+                        case "Feather_Falling":
+                            ench = Enchantment.PROTECTION_FALL;
+                            break;
+                        case "Depth_Strider":
+                            ench = Enchantment.DEPTH_STRIDER;
+                            break;
                     }
 
                     switch (enchLvl[1]){
-                        case "I" -> lvl = 1;
-                        case "II" -> lvl = 2;
-                        case "III" -> lvl = 3;
-                        case "IV" -> lvl = 4;
-                        case "V" -> lvl = 5;
+                        case "I":
+                            lvl = 1;
+                            break;
+                        case "II":
+                            lvl = 2;
+                            break;
+                        case "III":
+                            lvl = 3;
+                            break;
+                        case "IV":
+                            lvl = 4;
+                            break;
+                        case "V":
+                            lvl = 5;
+                            break;
                     }
 
                     ItemStack currentItem = p.getItemInHand();
